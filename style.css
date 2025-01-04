@@ -19,33 +19,8 @@ body {
 button {
     width: 120px;
 }
-```
 
-app.js:
-
-```javascript
-// Simulate getting the logged-in user's name
-window.onload = function() {
-    const username = "Student123"; // Replace with actual username retrieval logic
-    document.getElementById("username").innerText = `Welcome, ${username}`;
-};
-
-function startVM() {
-    alert("Starting the VM...");
-    // Stub for API call to start the VM
-}
-
-function stopVM() {
-    alert("Stopping the VM...");
-    // Stub for API call to stop the VM
-}
-
-function restartVM() {
-    alert("Restarting the VM...");
-    // Stub for API call to restart the VM
-}
-
-function deleteVM() {
-    alert("Deleting the VM...");
-    // Stub for API call to delete the VM
+.user-info button {
+    font-size: 12px;
+    padding: 5px 10px;
 }
