@@ -12,7 +12,12 @@
         <div class="card shadow-lg p-4">
             <h1 class="text-center mb-4">Welcome to the Protected Page</h1>
             <p id="welcome-message" class="text-center">You are logged in with Azure AD!</p>
-            
+
+            <!-- VM Status Indicator -->
+            <div id="vm-status-container" class="text-center mb-4">
+                <span id="vm-status" class="badge bg-secondary">Fetching Status...</span>
+            </div>
+
             <!-- Action Buttons -->
             <div class="d-flex justify-content-around mt-4">
                 <button class="btn btn-success" onclick="startVM()">Start</button>
