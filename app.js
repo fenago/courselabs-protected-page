@@ -1,8 +1,8 @@
 // MSAL Configuration
 const msalConfig = {
     auth: {
-        clientId: "YOUR_CLIENT_ID", // Replace with your Azure AD Application (client) ID
-        authority: "https://login.microsoftonline.com/YOUR_TENANT_ID", // Replace with your tenant ID
+        clientId: "3dfe519e-c7ca-4a15-b6be-a54c113e1368", // Your Azure AD Application (client) ID
+        authority: "https://login.microsoftonline.com/2b9e5221-f6e5-4177-80f9-eecfc6b9e267", // Your Azure AD Tenant ID
         redirectUri: "https://fenago.github.io/courselabs-protected-page/"
     }
 };
@@ -11,16 +11,20 @@ const msalInstance = new msal.PublicClientApplication(msalConfig);
 
 // Check if user is already logged in
 msalInstance.handleRedirectPromise().then((response) => {
+    console.log("Handling redirect promise...");
     if (response !== null && response.account !== null) {
-        // Set the active account and display username
         msalInstance.setActiveAccount(response.account);
+        console.log("Logged in user:", response.account.username);
         document.getElementById("welcome-message").innerText = `Welcome, ${response.account.username}`;
     } else {
         const currentAccounts = msalInstance.getAllAccounts();
+        console.log("Current accounts:", currentAccounts);
         if (currentAccounts.length === 0) {
-            login(); // If no accounts are found, trigger login
+            console.log("No accounts found, triggering login...");
+            login();
         } else {
             msalInstance.setActiveAccount(currentAccounts[0]);
+            console.log("Using existing account:", currentAccounts[0].username);
             document.getElementById("welcome-message").innerText = `Welcome, ${currentAccounts[0].username}`;
         }
     }
@@ -30,6 +34,7 @@ msalInstance.handleRedirectPromise().then((response) => {
 
 // Login function
 function login() {
+    console.log("Initiating login...");
     msalInstance.loginRedirect({
         scopes: ["user.read"]
     });
@@ -37,26 +42,25 @@ function login() {
 
 // Logout function
 document.getElementById("logout-btn").addEventListener("click", () => {
-    msalInstance.logoutRedirect();
+    console.log("Initiating logout...");
+    msalInstance.logoutRedirect().catch(error => {
+        console.error("Error during logoutRedirect:", error);
+    });
 });
 
 // Stubbed API functions
 function startVM() {
     alert("Starting the VM...");
-    // Stub for API call to start the VM
 }
 
 function stopVM() {
     alert("Stopping the VM...");
-    // Stub for API call to stop the VM
 }
 
 function restartVM() {
     alert("Restarting the VM...");
-    // Stub for API call to restart the VM
 }
 
 function deleteVM() {
     alert("Deleting the VM...");
-    // Stub for API call to delete the VM
 }
