@@ -51,16 +51,26 @@ document.getElementById("logout-btn").addEventListener("click", () => {
 // Stubbed API functions
 function startVM() {
     alert("Starting the VM...");
+    // Stub for API call to start the VM
 }
 
 function stopVM() {
     alert("Stopping the VM...");
+    // Stub for API call to stop the VM
 }
 
 function restartVM() {
     alert("Restarting the VM...");
+    // Stub for API call to restart the VM
 }
 
 function deleteVM() {
     alert("Deleting the VM...");
+    // Stub for API call to delete the VM
+}
+
+function getVMDetails() {
+    alert("Fetching VM details...");
+    // Stub for API call to get VM details
+    // Use Azure API endpoint: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/instanceView?api-version=2024-07-01
 }
