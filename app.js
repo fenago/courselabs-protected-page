@@ -13,14 +13,14 @@ const msalInstance = new msal.PublicClientApplication(msalConfig);
 msalInstance.handleRedirectPromise().then((response) => {
     if (response !== null && response.account !== null) {
         msalInstance.setActiveAccount(response.account);
-        document.querySelector("h1").innerText = `Welcome, ${response.account.username}`;
+        document.getElementById("username").innerText = `Welcome, ${response.account.username}`;
     } else {
         const currentAccounts = msalInstance.getAllAccounts();
         if (currentAccounts.length === 0) {
             login();
         } else {
             msalInstance.setActiveAccount(currentAccounts[0]);
-            document.querySelector("h1").innerText = `Welcome, ${currentAccounts[0].username}`;
+            document.getElementById("username").innerText = `Welcome, ${currentAccounts[0].username}`;
         }
     }
 }).catch(error => {
@@ -38,3 +38,23 @@ function login() {
 document.getElementById("logout-btn").addEventListener("click", () => {
     msalInstance.logoutRedirect();
 });
+
+function startVM() {
+    alert("Starting the VM...");
+    // Stub for API call to start the VM
+}
+
+function stopVM() {
+    alert("Stopping the VM...");
+    // Stub for API call to stop the VM
+}
+
+function restartVM() {
+    alert("Restarting the VM...");
+    // Stub for API call to restart the VM
+}
+
+function deleteVM() {
+    alert("Deleting the VM...");
+    // Stub for API call to delete the VM
+}
