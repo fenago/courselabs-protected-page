@@ -1,17 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Protected Page</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student VM Management</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Welcome to the Protected Page</h1>
-    <p>You are logged in with Azure AD!</p>
-    <button id="logout-btn">Logout</button>
+    <div class="container">
+        <h1>Virtual Machine Management</h1>
+        <div class="vm-info" id="vm-info">
+            <h3>VM Details</h3>
+            <p><strong>Name:</strong> AzureVM-123</p>
+            <p><strong>Status:</strong> Running</p>
+            <p><strong>Location:</strong> East US</p>
+            <p><strong>IP Address:</strong> 192.168.1.10</p>
+            <p><strong>Size:</strong> Standard_B2s</p>
+        </div>
+        <div class="actions">
+            <button class="start" onclick="startVM()">Start</button>
+            <button class="stop" onclick="stopVM()">Stop</button>
+            <button class="restart" onclick="restartVM()">Restart</button>
+            <button class="delete" onclick="deleteVM()">Delete</button>
+        </div>
+    </div>
 
-    <script src="https://alcdn.msauth.net/browser/2.28.1/js/msal-browser.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
