@@ -12,19 +12,20 @@ const msalInstance = new msal.PublicClientApplication(msalConfig);
 // Check if user is already logged in
 msalInstance.handleRedirectPromise().then((response) => {
     if (response !== null && response.account !== null) {
+        // Set the active account and display username
         msalInstance.setActiveAccount(response.account);
         document.getElementById("welcome-message").innerText = `Welcome, ${response.account.username}`;
     } else {
         const currentAccounts = msalInstance.getAllAccounts();
         if (currentAccounts.length === 0) {
-            login();
+            login(); // If no accounts are found, trigger login
         } else {
             msalInstance.setActiveAccount(currentAccounts[0]);
             document.getElementById("welcome-message").innerText = `Welcome, ${currentAccounts[0].username}`;
         }
     }
 }).catch(error => {
-    console.error(error);
+    console.error("Error during handleRedirectPromise:", error);
 });
 
 // Login function
