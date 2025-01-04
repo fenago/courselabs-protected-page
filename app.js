@@ -28,6 +28,9 @@ msalInstance.handleRedirectPromise().then((response) => {
             document.getElementById("welcome-message").innerText = `Welcome, ${currentAccounts[0].username}`;
         }
     }
+
+    // Simulate fetching initial VM status
+    setTimeout(() => updateVMStatus("Running"), 1000); // Example: Set initial status to "Running" after 1 second
 }).catch(error => {
     console.error("Error during handleRedirectPromise:", error);
 });
@@ -51,26 +54,50 @@ document.getElementById("logout-btn").addEventListener("click", () => {
 // Stubbed API functions
 function startVM() {
     alert("Starting the VM...");
-    // Stub for API call to start the VM
+    updateVMStatus("Starting");
 }
 
 function stopVM() {
     alert("Stopping the VM...");
-    // Stub for API call to stop the VM
+    updateVMStatus("Stopped");
 }
 
 function restartVM() {
     alert("Restarting the VM...");
-    // Stub for API call to restart the VM
+    updateVMStatus("Restarting");
 }
 
 function deleteVM() {
     alert("Deleting the VM...");
-    // Stub for API call to delete the VM
+    updateVMStatus("Deleted");
 }
 
 function getVMDetails() {
     alert("Fetching VM details...");
     // Stub for API call to get VM details
     // Use Azure API endpoint: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/instanceView?api-version=2024-07-01
+}
+
+// Function to update VM status dynamically
+function updateVMStatus(status) {
+    const statusElement = document.getElementById("vm-status");
+    statusElement.innerText = `VM Status: ${status}`;
+
+    // Update badge color based on status
+    switch (status.toLowerCase()) {
+        case "running":
+            statusElement.className = "badge bg-success";
+            break;
+        case "starting":
+        case "restarting":
+        case "deallocating":
+            statusElement.className = "badge bg-warning";
+            break;
+        case "stopped":
+        case "deleted":
+            statusElement.className = "badge bg-danger";
+            break;
+        default:
+            statusElement.className = "badge bg-secondary";
+    }
 }
