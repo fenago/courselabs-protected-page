@@ -1,29 +1,26 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background-color: #f8f9fa;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Protected Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 id="welcome-message" class="mb-4">Welcome to the Protected Page</h1>
+        <p>You are logged in with Azure AD!</p>
+        <div class="d-flex justify-content-center gap-3 mt-4">
+            <button class="btn btn-success" onclick="startVM()">Start</button>
+            <button class="btn btn-danger" onclick="stopVM()">Stop</button>
+            <button class="btn btn-warning" onclick="restartVM()">Restart</button>
+            <button class="btn btn-dark" onclick="deleteVM()">Delete</button>
+            <button id="logout-btn" class="btn btn-outline-secondary">Logout</button>
+        </div>
+    </div>
 
-.container {
-    text-align: center;
-    max-width: 600px;
-    padding: 20px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-    color: #4CAF50;
-}
-
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-}
+    <script src="https://alcdn.msauth.net/browser/2.28.1/js/msal-browser.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
