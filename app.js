@@ -34,7 +34,6 @@ msalInstance.handleRedirectPromise().then((response) => {
         document.getElementById("welcome-message").innerText = `Welcome, ${response.account.username}`;
     } else {
         const currentAccounts = msalInstance.getAllAccounts();
-        console.log("Current accounts:", currentAccounts);
         if (currentAccounts.length === 0) {
             console.log("No accounts found, triggering login...");
             login();
@@ -69,33 +68,33 @@ document.getElementById("logout-btn").addEventListener("click", () => {
 
 // Stubbed API functions
 async function startVM() {
-    alert("Starting the VM...");
-    await callAzureFunction("start");
-    updateVMStatus("Starting");
+    displayMessage("Starting the VM...");
+    const result = await callAzureFunction("start");
+    if (result) displayMessage("VM started successfully.");
 }
 
 async function stopVM() {
-    alert("Stopping the VM...");
-    await callAzureFunction("stop");
-    updateVMStatus("Stopped");
+    displayMessage("Stopping the VM...");
+    const result = await callAzureFunction("stop");
+    if (result) displayMessage("VM stopped successfully.");
 }
 
 async function restartVM() {
-    alert("Restarting the VM...");
-    await callAzureFunction("restart");
-    updateVMStatus("Restarting");
+    displayMessage("Restarting the VM...");
+    const result = await callAzureFunction("restart");
+    if (result) displayMessage("VM restarted successfully.");
 }
 
 async function deleteVM() {
-    alert("Deleting the VM...");
-    await callAzureFunction("delete");
-    updateVMStatus("Deleted");
+    displayMessage("Deleting the VM...");
+    const result = await callAzureFunction("delete");
+    if (result) displayMessage("VM deleted successfully.");
 }
 
 async function getVMDetails() {
-    alert("Fetching VM details...");
+    displayMessage("Fetching VM details...");
     const result = await callAzureFunction("details");
-    console.log("VM Details:", result);
+    if (result) displayMessage(`VM Details: ${JSON.stringify(result)}`);
 }
 
 // Function to update VM status dynamically
@@ -143,6 +142,18 @@ async function callAzureFunction(action) {
         return data;
     } catch (error) {
         console.error(`Error calling Azure Function for action ${action}:`, error);
-        alert(`Failed to ${action} the VM. Please try again.`);
+        displayMessage(`Failed to ${action} the VM. Please try again.`, true);
     }
+}
+
+// Function to display messages in the UI
+function displayMessage(message, isError = false) {
+    const messageContainer = document.getElementById("message-container");
+    const messageElement = document.createElement("div");
+    messageElement.innerText = message;
+    messageElement.className = isError ? "alert alert-danger" : "alert alert-success";
+    messageContainer.appendChild(messageElement);
+
+    // Automatically remove the message after 5 seconds
+    setTimeout(() => messageElement.remove(), 5000);
 }
