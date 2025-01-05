@@ -1,57 +1,57 @@
-const { DefaultAzureCredential } = require("@azure/identity");
 const { ComputeManagementClient } = require("@azure/arm-compute");
+const { DefaultAzureCredential } = require("@azure/identity");
 
 module.exports = async function (context, req) {
-    const action = req.query.action; // Action: start, stop, restart, delete, getDetails
-    const vmName = req.query.vmName;
-    const subscriptionId = process.env.SUBSCRIPTION_ID;
-    const resourceGroupName = process.env.RESOURCE_GROUP;
+    context.log('Received request for VM control.');
 
-    if (!action || !vmName) {
+    // Extract request parameters
+    const action = req.query.action || req.body?.action;
+    const resourceGroupName = req.query.resourceGroup || req.body?.resourceGroup;
+    const vmName = req.query.vmName || req.body?.vmName;
+
+    if (!action || !resourceGroupName || !vmName) {
         context.res = {
             status: 400,
-            body: "Please provide both 'action' and 'vmName' as query parameters."
+            body: "Please provide action, resourceGroup, and vmName in the request."
         };
         return;
     }
 
+    const subscriptionId = process.env["SUBSCRIPTION_ID"];
     const credential = new DefaultAzureCredential();
     const client = new ComputeManagementClient(credential, subscriptionId);
 
     try {
         let result;
         switch (action.toLowerCase()) {
-            case "start":
+            case 'start':
                 result = await client.virtualMachines.beginStartAndWait(resourceGroupName, vmName);
+                context.res = { status: 200, body: `VM ${vmName} started successfully.` };
                 break;
-            case "stop":
+            case 'stop':
                 result = await client.virtualMachines.beginDeallocateAndWait(resourceGroupName, vmName);
+                context.res = { status: 200, body: `VM ${vmName} stopped successfully.` };
                 break;
-            case "restart":
+            case 'restart':
                 result = await client.virtualMachines.beginRestartAndWait(resourceGroupName, vmName);
+                context.res = { status: 200, body: `VM ${vmName} restarted successfully.` };
                 break;
-            case "delete":
+            case 'delete':
                 result = await client.virtualMachines.beginDeleteAndWait(resourceGroupName, vmName);
+                context.res = { status: 200, body: `VM ${vmName} deleted successfully.` };
                 break;
-            case "getdetails":
-                result = await client.virtualMachines.get(resourceGroupName, vmName, { expand: "instanceView" });
+            case 'details':
+                result = await client.virtualMachines.get(resourceGroupName, vmName);
+                context.res = { status: 200, body: result };
                 break;
             default:
-                context.res = {
-                    status: 400,
-                    body: "Invalid action. Valid actions are: start, stop, restart, delete, getDetails."
-                };
-                return;
+                context.res = { status: 400, body: "Invalid action. Use start, stop, restart, delete, or details." };
         }
-
-        context.res = {
-            status: 200,
-            body: result
-        };
     } catch (error) {
+        context.log.error("Error controlling VM:", error);
         context.res = {
             status: 500,
-            body: `Error performing action '${action}' on VM '${vmName}': ${error.message}`
+            body: `An error occurred: ${error.message}`
         };
     }
 };
