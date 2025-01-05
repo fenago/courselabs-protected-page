@@ -9,6 +9,22 @@ const msalConfig = {
 
 const msalInstance = new msal.PublicClientApplication(msalConfig);
 
+// Function to get the access token for calling Azure Function
+async function getAccessToken() {
+    const request = {
+        scopes: ["https://management.azure.com/user_impersonation"]
+    };
+
+    try {
+        const response = await msalInstance.acquireTokenSilent(request);
+        console.log("Access token acquired silently.");
+        return response.accessToken;
+    } catch (error) {
+        console.warn("Silent token acquisition failed, attempting redirect login.", error);
+        return msalInstance.acquireTokenRedirect(request);
+    }
+}
+
 // Check if user is already logged in
 msalInstance.handleRedirectPromise().then((response) => {
     console.log("Handling redirect promise...");
@@ -52,30 +68,34 @@ document.getElementById("logout-btn").addEventListener("click", () => {
 });
 
 // Stubbed API functions
-function startVM() {
+async function startVM() {
     alert("Starting the VM...");
+    await callAzureFunction("start");
     updateVMStatus("Starting");
 }
 
-function stopVM() {
+async function stopVM() {
     alert("Stopping the VM...");
+    await callAzureFunction("stop");
     updateVMStatus("Stopped");
 }
 
-function restartVM() {
+async function restartVM() {
     alert("Restarting the VM...");
+    await callAzureFunction("restart");
     updateVMStatus("Restarting");
 }
 
-function deleteVM() {
+async function deleteVM() {
     alert("Deleting the VM...");
+    await callAzureFunction("delete");
     updateVMStatus("Deleted");
 }
 
-function getVMDetails() {
+async function getVMDetails() {
     alert("Fetching VM details...");
-    // Stub for API call to get VM details
-    // Use Azure API endpoint: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/instanceView?api-version=2024-07-01
+    const result = await callAzureFunction("details");
+    console.log("VM Details:", result);
 }
 
 // Function to update VM status dynamically
@@ -99,5 +119,30 @@ function updateVMStatus(status) {
             break;
         default:
             statusElement.className = "badge bg-secondary";
+    }
+}
+
+// Function to call Azure Function App API
+async function callAzureFunction(action) {
+    const functionUrl = `https://vm-control-function.azurewebsites.net/api/controlVM?action=${action}`;
+    const token = await getAccessToken();
+
+    try {
+        const response = await fetch(functionUrl, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error calling Azure Function: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(`Error calling Azure Function for action ${action}:`, error);
+        alert(`Failed to ${action} the VM. Please try again.`);
     }
 }
